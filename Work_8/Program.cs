@@ -215,15 +215,12 @@ CreateThreeMatrix(3, 3, 3);
 /*
 // Задача 62: Напишите программу, которая заполнит спирально массив 4 на 4.
 
-int[,] CreateMatrixRandom(int row, int column)
+int MethodOne(int count, int sum, int[,] matrix, int start_column)
 {
-    int[,] matrix = new int[row, column];
-    int sum = 0;
-    int start_column = 0;
+    int row = matrix.GetLength(0);
+    int column = matrix.GetLength(1);
 
-    for (int count = 0; count < matrix.GetLength(1) / 2; count++)
-    {
-        for (int i = count; i < row - count; i++)
+    for (int i = count; i < row - count; i++)
         {
             for (int j = start_column; j < column - count; j++)
             {
@@ -232,20 +229,40 @@ int[,] CreateMatrixRandom(int row, int column)
             }
             start_column = (column - count) - 1;
         }
+    return sum;
+}
 
-        start_column = count + 2;
+int MethodSecond(int count, int sum, int[,] matrix, int start_column)
+{
+    int row = matrix.GetLength(0);
+    int column = matrix.GetLength(1);
 
-        for (int i = (row - 1) - count; i > count; i--)
+    for (int i = (row - 1) - count; i > count; i--)
+    {
+        for (int j = column - start_column; j >= count; j--)
         {
-            for (int j = column - start_column; j >= count; j--)
-            {
-                matrix[i, j] = sum;
-                sum += 1;
-            }
-            start_column = column - count;
+            matrix[i, j] = sum;
+            sum += 1;
         }
+        start_column = column - count;
+    }
+    return sum;
+}
 
-        start_column = count + 1;
+int[,] CreateMatrixRandom(int row, int column)
+{
+    int[,] matrix = new int[row, column];
+    int sum = 0;
+    int start_index = 0;
+    int stop_index = (matrix.GetLength(1) / 2) + 1;
+
+    for (int count = 0; count < stop_index; count++)
+    {
+        sum = MethodOne(count, sum, matrix, start_index);
+        start_index = count + 2;
+        
+        sum = MethodSecond(count, sum, matrix, start_index);
+        start_index = count + 1;
     }
 
     PrintMatrix(matrix);
